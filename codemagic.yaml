@@ -1,14 +1,20 @@
 workflows:
-  android-aab-workflow:
-    name: Build OMNI-ID Release AAB
-    instance_type: mac_mini_m1
-    max_build_duration: 30
+  default-workflow:
+    name: Build OMNI-ID Vault APK
+    max_build_duration: 60
+    instance_type: mac_mini_m2
     environment:
       flutter: stable
     scripts:
-      - name: Get Flutter Packages
-        script: flutter pub get
-      - name: Build Android App Bundle (.aab)
-        script: flutter build appbundle --release --no-codesign
+      - name: Extract ZIP contents
+        script: |
+          unzip -o omni_id_vault.zip
+          cp -r omni_id_vault/* .
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+      - name: Build APK
+        script: |
+          flutter build apk --release
     artifacts:
-      - build/app/outputs/bundle/release/*.aab
+      - build/app/outputs/flutter-apk/*.apk
